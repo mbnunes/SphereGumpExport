@@ -89,12 +89,12 @@ namespace SphereGumpExport
       this.rbt_Sphere56.Size = new Size(128, 16);
       this.rbt_Sphere56.TabIndex = 3;
       this.rbt_Sphere56.TabStop = true;
-      this.rbt_Sphere56.Text = ">0.56d";
+      this.rbt_Sphere56.Text = "0.56 ( and Revision )";
       this.rbt_Sphere1.Location = new Point(16, 48);
       this.rbt_Sphere1.Name = "rbt_Sphere1";
       this.rbt_Sphere1.Size = new Size(128, 24);
       this.rbt_Sphere1.TabIndex = 3;
-      this.rbt_Sphere1.Text = "<0.56c";
+      this.rbt_Sphere1.Text = "0.99 and 1.0";
       this.grp_Properties.Controls.Add((Control) this.lbl_Gumpname);
       this.grp_Properties.Controls.Add((Control) this.txt_Gumpname);
       this.grp_Properties.Location = new Point(168, 40);
@@ -157,7 +157,7 @@ namespace SphereGumpExport
       this.Controls.Add((Control) this.grp_Saveas);
       this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
       ((Control) this).Location = new Point(256, 184);
-      this.Name = nameof (SphereExportForm);
+      this.Name = "SphereExportForm";
       this.StartPosition = FormStartPosition.CenterParent;
       this.Text = "Sphere Export Options";
       this.grp_Sphereversion.ResumeLayout(false);

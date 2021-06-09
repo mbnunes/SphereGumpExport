@@ -7,6 +7,7 @@
 using GumpStudio;
 using GumpStudio.Elements;
 using GumpStudio.Plugins;
+using GumpStudio.Forms;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -26,7 +27,7 @@ namespace SphereGumpExport
     {
       get
       {
-        return this.GetPluginInfo().PluginName;
+        return (string) this.GetPluginInfo().PluginName;
       }
     }
 
@@ -34,10 +35,10 @@ namespace SphereGumpExport
     {
       return new PluginInfo()
       {
-        AuthorEmail = "mutila@gmail.com",
-        AuthorName = "Mauricio Nunes",
-        Description = "Exports the Gump into a Sphere script based SphereExporter by Francesco Furiani.",
-        PluginName = nameof (SphereExporter),
+        AuthorEmail = "furio@sphere-italia.org",
+        AuthorName = "Francesco Furiani",
+        Description = "Exports the Gump into a Sphere script.",
+        PluginName = "SphereExporter",
         Version = "1.2"
       };
     }
@@ -66,34 +67,34 @@ namespace SphereGumpExport
       ArrayList arrayList2 = new ArrayList();
       stringWriter1.WriteLine("// Created {0}, with Gump Studio.", (object) DateTime.Now);
       stringWriter1.WriteLine("// Exported with with {0} ver {1}.", (object) this.GetPluginInfo().PluginName, (object) this.GetPluginInfo().Version);
-      stringWriter1.WriteLine("// Script for {0}", bIsRevision ? (object) "0.56d+" : (object) "0.56c-");
+      stringWriter1.WriteLine("// Script for {0}", bIsRevision ? (object) "0.56/Revisions" : (object) "0.99/1.0");
       stringWriter1.WriteLine("");
       stringWriter1.WriteLine("[DIALOG {0}]", (object) this.frm_SphereExportForm.GumpName);
       StringWriter stringWriter2 = stringWriter1;
       string format = "{0}";
       int num1 = bIsRevision ? 1 : 0;
-      Point location = this.m_Designer.GumpProperties.Location;
+      Point location = ((GumpProperties) this.m_Designer.GumpProperties).Location;
       int x = location.X;
-      location = this.m_Designer.GumpProperties.Location;
+      location = ((GumpProperties) this.m_Designer.GumpProperties).Location;
       int y = location.Y;
       string str = this.Gump_WriteLocation(num1 != 0, x, y);
       stringWriter2.WriteLine(format, (object) str);
-      if (!this.m_Designer.GumpProperties.Closeable)
+      if (!((GumpProperties) this.m_Designer.GumpProperties).Closeable)
         stringWriter1.WriteLine("{0}", bIsRevision ? (object) "NOCLOSE" : (object) "NoClose");
-      if (!this.m_Designer.GumpProperties.Moveable)
+      if (!((GumpProperties) this.m_Designer.GumpProperties).Moveable)
         stringWriter1.WriteLine("{0}", bIsRevision ? (object) "NOMOVE" : (object) "NoMove");
-      if (!this.m_Designer.GumpProperties.Disposeable)
+      if (!((GumpProperties) this.m_Designer.GumpProperties).Disposeable)
         stringWriter1.WriteLine("{0}", bIsRevision ? (object) "NODISPOSE" : (object) "NoDispose");
-      if (this.m_Designer.Stacks.Count > 0)
+      if (((ArrayList) this.m_Designer.Stacks).Count > 0)
       {
         int id1 = 0;
         int id2 = 0;
         int id3 = 0;
         int num2 = -1;
-        for (int iPage = 0; iPage < this.m_Designer.Stacks.Count; ++iPage)
+        for (int iPage = 0; iPage < ((ArrayList) this.m_Designer.Stacks).Count; ++iPage)
         {
           stringWriter1.WriteLine("{0}", (object) this.Gump_WritePage(bIsRevision, iPage));
-          GroupElement stack = this.m_Designer.Stacks[iPage] as GroupElement;
+          GroupElement stack = ((ArrayList) this.m_Designer.Stacks)[iPage] as GroupElement;
           if (stack != null)
           {
             ArrayList elementsRecursive = stack.GetElementsRecursive();
@@ -117,46 +118,46 @@ namespace SphereGumpExport
                         else
                           arrayList2.Add((object) new SphereExporter.SphereElement(text, id1));
                       }
-                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteHTML(bIsRevision, htmlElement.X, htmlElement.Y, htmlElement.Width, htmlElement.Height, htmlElement.ShowBackground, htmlElement.ShowScrollbar, ref id1, htmlElement.HTML));
+                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteHTML(bIsRevision, ((BaseElement) htmlElement).X, ((BaseElement) htmlElement).Y, ((ResizeableElement) htmlElement).Width, ((ResizeableElement) htmlElement).Height, htmlElement.ShowBackground, htmlElement.ShowScrollbar, ref id1, htmlElement.HTML));
                     }
                     else
-                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteXFHTML(bIsRevision, htmlElement.X, htmlElement.Y, htmlElement.Width, htmlElement.Height, htmlElement.ShowBackground, htmlElement.ShowScrollbar, htmlElement.CliLocID));
+                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteXFHTML(bIsRevision, ((BaseElement) htmlElement).X, ((BaseElement) htmlElement).Y, ((ResizeableElement) htmlElement).Width, ((ResizeableElement) htmlElement).Height, htmlElement.ShowBackground, htmlElement.ShowScrollbar, htmlElement.CliLocID));
                   }
                   else
                   {
                     AlphaElement alphaElement = baseElement as AlphaElement;
                     if (alphaElement != null)
                     {
-                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteCheckerTrans(bIsRevision, alphaElement.X, alphaElement.Y, alphaElement.Width, alphaElement.Height));
+                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteCheckerTrans(bIsRevision, ((BaseElement) alphaElement).X, ((BaseElement) alphaElement).Y, ((ResizeableElement) alphaElement).Width, ((ResizeableElement) alphaElement).Height));
                     }
                     else
                     {
                       BackgroundElement backgroundElement = baseElement as BackgroundElement;
                       if (backgroundElement != null)
                       {
-                        stringWriter1.WriteLine("{0}", (object) this.Gump_WriteResizePic(bIsRevision, backgroundElement.X, backgroundElement.Y, backgroundElement.Width, backgroundElement.Height, backgroundElement.GumpID));
+                        stringWriter1.WriteLine("{0}", (object) this.Gump_WriteResizePic(bIsRevision, ((BaseElement) backgroundElement).X, ((BaseElement) backgroundElement).Y, ((ResizeableElement) backgroundElement).Width, ((ResizeableElement) backgroundElement).Height, backgroundElement.GumpID));
                       }
                       else
                       {
                         ButtonElement buttonElement = baseElement as ButtonElement;
                         if (buttonElement != null)
                         {
-                          arrayList1.Add((object) new SphereExporter.SphereElement("// " + buttonElement.Name + "\n// " + buttonElement.Code, buttonElement.ButtonType == ButtonTypeEnum.Reply ? buttonElement.Param : id2));
-                          stringWriter1.WriteLine("{0}", (object) this.Gump_WriteButton(bIsRevision, buttonElement.X, buttonElement.Y, buttonElement.NormalID, buttonElement.PressedID, buttonElement.ButtonType == ButtonTypeEnum.Reply, buttonElement.Param, ref id2));
+                          arrayList1.Add((object) new SphereExporter.SphereElement("// " + ((BaseElement) buttonElement).Name + "\n// " + buttonElement.Code, buttonElement.ButtonType == ButtonTypeEnum.Reply ? buttonElement.Param : id2));
+                          stringWriter1.WriteLine("{0}", (object) this.Gump_WriteButton(bIsRevision, ((BaseElement) buttonElement).X, ((BaseElement) buttonElement).Y, buttonElement.NormalID, buttonElement.PressedID, buttonElement.ButtonType == ButtonTypeEnum.Page , buttonElement.Param, ref id2));
                         }
                         else
                         {
                           ImageElement imageElement = baseElement as ImageElement;
                           if (imageElement != null)
                           {
-                            stringWriter1.WriteLine("{0}", (object) this.Gump_WriteGumpPic(bIsRevision, imageElement.X, imageElement.Y, imageElement.GumpID, imageElement.Hue.ToString()));
+                            stringWriter1.WriteLine("{0}", (object) this.Gump_WriteGumpPic(bIsRevision, ((BaseElement) imageElement).X, ((BaseElement) imageElement).Y, imageElement.GumpID, imageElement.Hue.ToString()));
                           }
                           else
                           {
                             ItemElement itemElement = baseElement as ItemElement;
                             if (itemElement != null)
                             {
-                              stringWriter1.WriteLine("{0}", (object) this.Gump_WriteTilePic(bIsRevision, itemElement.X, itemElement.Y, itemElement.ItemID, itemElement.Hue.ToString()));
+                              stringWriter1.WriteLine("{0}", (object) this.Gump_WriteTilePic(bIsRevision, ((BaseElement) itemElement).X, ((BaseElement) itemElement).Y, itemElement.ItemID, itemElement.Hue.ToString()));
                             }
                             else
                             {
@@ -171,7 +172,7 @@ namespace SphereGumpExport
                                   else
                                     arrayList2.Add((object) new SphereExporter.SphereElement(text, id1));
                                 }
-                                stringWriter1.WriteLine("{0}", (object) this.Gump_WriteText(bIsRevision, labelElement.X, labelElement.Y, labelElement.Hue.Index, labelElement.Text, ref id1));
+                                stringWriter1.WriteLine("{0}", (object) this.Gump_WriteText(bIsRevision, ((BaseElement) labelElement).X, ((BaseElement) labelElement).Y, labelElement.Hue.ToString(), labelElement.Text, ref id1));
                               }
                               else
                               {
@@ -183,14 +184,14 @@ namespace SphereGumpExport
                                     stringWriter1.WriteLine("Group{0}", bIsRevision ? (object) (" " + radioElement.Group.ToString()) : (object) ("(" + radioElement.Group.ToString() + ")"));
                                     num2 = radioElement.Group;
                                   }
-                                  stringWriter1.WriteLine("{0}", (object) this.Gump_WriteRadioBox(bIsRevision, radioElement.X, radioElement.Y, radioElement.UnCheckedID, radioElement.CheckedID, radioElement.Checked, radioElement.Value));
+                                  stringWriter1.WriteLine("{0}", (object) this.Gump_WriteRadioBox(bIsRevision, ((BaseElement) radioElement).X, ((BaseElement) radioElement).Y, ((CheckboxElement) radioElement).UnCheckedID, ((CheckboxElement) radioElement).CheckedID, radioElement.Checked, radioElement.Value));
                                 }
                                 else
                                 {
                                   CheckboxElement checkboxElement = baseElement as CheckboxElement;
                                   if (checkboxElement != null)
                                   {
-                                    stringWriter1.WriteLine("{0}", (object) this.Gump_WriteCheckBox(bIsRevision, checkboxElement.X, checkboxElement.Y, checkboxElement.UnCheckedID, checkboxElement.CheckedID, checkboxElement.Checked, ref id3));
+                                    stringWriter1.WriteLine("{0}", (object) this.Gump_WriteCheckBox(bIsRevision, ((BaseElement) checkboxElement).X, ((BaseElement) checkboxElement).Y, checkboxElement.UnCheckedID, checkboxElement.CheckedID, checkboxElement.Checked, ref id3));
                                   }
                                   else
                                   {
@@ -205,13 +206,13 @@ namespace SphereGumpExport
                                         else
                                           arrayList2.Add((object) new SphereExporter.SphereElement(text, id1));
                                       }
-                                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteTextEntry(bIsRevision, textEntryElement.X, textEntryElement.Y, textEntryElement.Width, textEntryElement.Height, textEntryElement.Hue.ToString(), textEntryElement.InitialText, textEntryElement.ID, ref id1));
+                                      stringWriter1.WriteLine("{0}", (object) this.Gump_WriteTextEntry(bIsRevision, ((BaseElement) textEntryElement).X, ((BaseElement) textEntryElement).Y, ((ResizeableElement) textEntryElement).Width, ((ResizeableElement) textEntryElement).Height, textEntryElement.Hue.ToString(), textEntryElement.InitialText, textEntryElement.ID, ref id1));
                                     }
                                     else
                                     {
                                       TiledElement tiledElement = baseElement as TiledElement;
                                       if (tiledElement != null)
-                                        stringWriter1.WriteLine("{0}", (object) this.Gump_WriteGumpPicTiled(bIsRevision, tiledElement.X, tiledElement.Y, tiledElement.Width, tiledElement.Height, tiledElement.GumpID));
+                                        stringWriter1.WriteLine("{0}", (object) this.Gump_WriteGumpPicTiled(bIsRevision, ((BaseElement) tiledElement).X, ((BaseElement) tiledElement).Y, ((ResizeableElement) tiledElement).Width, ((ResizeableElement) tiledElement).Height, tiledElement.GumpID));
                                     }
                                   }
                                 }
@@ -229,7 +230,7 @@ namespace SphereGumpExport
         }
       }
       stringWriter1.WriteLine("");
-      if (!bIsRevision)
+      if (bIsRevision)
       {
         stringWriter1.WriteLine("[DIALOG {0} text]", (object) this.frm_SphereExportForm.GumpName);
         foreach (SphereExporter.SphereElement sphereElement in arrayList2)
@@ -254,64 +255,64 @@ namespace SphereGumpExport
 
     private string Gump_WriteLocation(bool bIsRevision, int x, int y)
     {
-     // if (bIsRevision)
+      if (bIsRevision)
         return x.ToString() + "," + y.ToString();
-      //return "SetLocation=" + x.ToString() + "," + y.ToString();
+      return "SetLocation=" + x.ToString() + "," + y.ToString();
     }
 
     private string Gump_WritePage(bool bIsRevision, int iPage)
     {
-      //if (bIsRevision)
+      if (bIsRevision)
         return "page " + iPage.ToString();
-      //return "Page(" + iPage.ToString() + ")";
+      return "Page(" + iPage.ToString() + ")";
     }
 
     private string Gump_WriteHTML(bool bIsRevision, int x, int y, int width, int height, bool background, bool scrollbar, ref int id, string text)
     {
       StringWriter stringWriter = new StringWriter();
-      //if (bisrevision)
-      //{
+      if (bIsRevision)
+      {
         stringWriter.Write("htmlgump {0} {1} {2} {3} {4} {5} {6}", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) id.ToString(), background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
         ++id;
-      //}
-      //else
-      //{
-      //  if (text == null)
-      //    text = " ";
-      //  string str = text.ToString();
-      //  str.Replace("\"", "\\\"");
-      //  stringWriter.Write("HtmlGumpA({0},{1},{2},{3},\"{4}\",{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) str, background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
-      //}
+      }
+      else
+      {
+        if (text == null)
+          text = " ";
+        string str = text.ToString();
+        str.Replace("\"", "\\\"");
+        stringWriter.Write("HtmlGumpA({0},{1},{2},{3},\"{4}\",{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) str, background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
+      }
       return stringWriter.ToString();
     }
 
     private string Gump_WriteXFHTML(bool bIsRevision, int x, int y, int width, int height, bool background, bool scrollbar, int cliloc)
     {
       StringWriter stringWriter = new StringWriter();
-      //if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("xmfhtmlgump {0} {1} {2} {3} {4} {5} {6}", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) cliloc.ToString(), background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
-      //else
-      //  stringWriter.Write("XmfHtmlGump({0},{1},{2},{3},{4},{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) cliloc.ToString(), background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
+      else
+        stringWriter.Write("XmfHtmlGump({0},{1},{2},{3},{4},{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) cliloc.ToString(), background ? (object) "1" : (object) "0", scrollbar ? (object) "1" : (object) "0");
       return stringWriter.ToString();
     }
 
     private string Gump_WriteCheckerTrans(bool bIsRevision, int x, int y, int width, int height)
     {
       StringWriter stringWriter = new StringWriter();
-//    if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("checkertrans {0} {1} {2} {3}", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString());
-      //else
-      //  stringWriter.Write("CheckerTrans({0},{1},{2},{3})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString());
+      else
+        stringWriter.Write("CheckerTrans({0},{1},{2},{3})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString());
       return stringWriter.ToString();
     }
 
     private string Gump_WriteResizePic(bool bIsRevision, int x, int y, int width, int height, int gumpid)
     {
       StringWriter stringWriter = new StringWriter();
-      //if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("resizepic {0} {1} {2} {3} {4}", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), (object) width.ToString(), (object) height.ToString());
-     // else
-       // stringWriter.Write("ResizePic({0},{1},{2},{3},{4})", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), (object) width.ToString(), (object) height.ToString());
+      else
+        stringWriter.Write("ResizePic({0},{1},{2},{3},{4})", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), (object) width.ToString(), (object) height.ToString());
       return stringWriter.ToString();
     }
 
@@ -321,10 +322,10 @@ namespace SphereGumpExport
       bool flag = false;
       if (hue != null && hue.Length != 0 && string.Compare(hue, "0", true) != 0)
         flag = true;
-     // if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("gumppic {0} {1} {2}{3}", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), flag ? (object) (" " + hue) : (object) "");
-    //  else
-    //    stringWriter.Write("GumpPic({0},{1},{2}{3})", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), flag ? (object) ("," + hue) : (object) "");
+      else
+        stringWriter.Write("GumpPic({0},{1},{2}{3})", (object) x.ToString(), (object) y.ToString(), (object) gumpid.ToString(), flag ? (object) ("," + hue) : (object) "");
       return stringWriter.ToString();
     }
 
@@ -334,47 +335,50 @@ namespace SphereGumpExport
       bool flag = false;
       if (hue != null && hue.Length != 0 && string.Compare(hue, "0", true) != 0)
         flag = true;
-    //  if (bIsRevision)
-        stringWriter.Write("tilepic{0} {1} {2} {3}{4}", flag ? (object) nameof (hue) : (object) "", (object) x.ToString(), (object) y.ToString(), (object) itemid.ToString(), flag ? (object) (" " + hue) : (object) "");
-    //  else
-   //     stringWriter.Write("TilePic{0}({1},{2},{3}{4})", flag ? (object) "Hue" : (object) "", (object) x.ToString(), (object) y.ToString(), (object) itemid.ToString(), flag ? (object) ("," + hue) : (object) "");
+      if (bIsRevision)
+        stringWriter.Write("tilepic{0} {1} {2} {3}{4}", flag ? (object) "hue" : (object) "", (object) x.ToString(), (object) y.ToString(), (object) itemid.ToString(), flag ? (object) (" " + hue) : (object) "");
+      else
+        stringWriter.Write("TilePic{0}({1},{2},{3}{4})", flag ? (object) "Hue" : (object) "", (object) x.ToString(), (object) y.ToString(), (object) itemid.ToString(), flag ? (object) ("," + hue) : (object) "");
       return stringWriter.ToString();
     }
 
     private string Gump_WriteGumpPicTiled(bool bIsRevision, int x, int y, int width, int height, int gumpid)
     {
       StringWriter stringWriter = new StringWriter();
-   //   if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("gumppictiled {0} {1} {2} {3} {4}", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) gumpid.ToString());
-   //   else
-    //    stringWriter.Write("GumpPicTiled({0},{1},{2},{3},{4})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) gumpid.ToString());
+      else
+        stringWriter.Write("GumpPicTiled({0},{1},{2},{3},{4})", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) gumpid.ToString());
       return stringWriter.ToString();
     }
 
     private string Gump_WriteButton(bool bIsRevision, int x, int y, int normalid, int pressedid, bool isReply, int pageto, ref int id)
     {
       StringWriter stringWriter = new StringWriter();
-  //    if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("button {0} {1} {2} {3} {4} {5} {6}", (object) x.ToString(), (object) y.ToString(), (object) normalid.ToString(), (object) pressedid.ToString(), (object) "1", isReply ? (object) "0" : (object) pageto.ToString(), isReply ? (object) pageto.ToString() : (object) id.ToString());
-  //    else
-  //      stringWriter.Write("Button({0},{1},{2},{3},{4},{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) normalid.ToString(), (object) pressedid.ToString(), (object) "1", isReply ? (object) "0" : (object) pageto.ToString(), isReply ? (object) pageto.ToString() : (object) id.ToString());
+      else
+        stringWriter.Write("Button({0},{1},{2},{3},{4},{5},{6})", (object) x.ToString(), (object) y.ToString(), (object) normalid.ToString(), (object) pressedid.ToString(), (object) "1", isReply ? (object) "0" : (object) pageto.ToString(), isReply ? (object) pageto.ToString() : (object) id.ToString());
       if (!isReply)
         ++id;
       return stringWriter.ToString();
     }
 
-    private string Gump_WriteText(bool bIsRevision, int x, int y, int hue, string text, ref int id)
+    private string Gump_WriteText(bool bIsRevision, int x, int y, string hue, string text, ref int id)
     {
       StringWriter stringWriter = new StringWriter();
       if (bIsRevision)
-      {        
-        stringWriter.Write("dtext {0} {1} {2} {3}", (object)x.ToString(), (object)y.ToString(), (object)hue, (object)text);
+      {
+        stringWriter.Write("text {0} {1} {2} {3}", (object) x.ToString(), (object) y.ToString(), (object) hue, (object) id.ToString());
         ++id;
-    }
+      }
       else
       {
-        stringWriter.Write("text {0} {1} {2} {3}", (object)x.ToString(), (object)y.ToString(), (object)hue, (object)id.ToString());
-        ++id;
+        if (text == null)
+          text = " ";
+        string str = text.ToString();
+        str.Replace("\"", "\\\"");
+        stringWriter.Write("TextA({0},{1},{2},\"{3}\")", (object) x.ToString(), (object) y.ToString(), (object) hue, (object) str);
       }
       return stringWriter.ToString();
     }
@@ -382,10 +386,10 @@ namespace SphereGumpExport
     private string Gump_WriteCheckBox(bool bIsRevision, int x, int y, int uncheckedid, int checkedid, bool ischecked, ref int id)
     {
       StringWriter stringWriter = new StringWriter();
-      //if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("checkbox {0} {1} {2} {3} {4} {5}", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
-     // else
-       // stringWriter.Write("CheckBox({0},{1},{2},{3},{4},{5})", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
+      else
+        stringWriter.Write("CheckBox({0},{1},{2},{3},{4},{5})", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
       ++id;
       return stringWriter.ToString();
     }
@@ -393,29 +397,29 @@ namespace SphereGumpExport
     private string Gump_WriteTextEntry(bool bIsRevision, int x, int y, int width, int height, string hue, string text, int returnid, ref int id)
     {
       StringWriter stringWriter = new StringWriter();
-     // if (bIsRevision)
-     // {
+      if (bIsRevision)
+      {
         stringWriter.Write("textentry {0} {1} {2} {3} {4} {5} {6}", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) hue, (object) returnid.ToString(), (object) id.ToString());
         ++id;
-     // }
-     // else
-     // {
-      //  if (text == null)
-      //    text = " ";
-     //   string str = text.ToString();
-     //   str.Replace("\"", "\\\"");
-     //   stringWriter.Write("TextEntryA({0},{1},{2},{3},{4},{5},\"{6}\")", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) hue, (object) returnid.ToString(), (object) str);
-     // }
+      }
+      else
+      {
+        if (text == null)
+          text = " ";
+        string str = text.ToString();
+        str.Replace("\"", "\\\"");
+        stringWriter.Write("TextEntryA({0},{1},{2},{3},{4},{5},\"{6}\")", (object) x.ToString(), (object) y.ToString(), (object) width.ToString(), (object) height.ToString(), (object) hue, (object) returnid.ToString(), (object) str);
+      }
       return stringWriter.ToString();
     }
 
     private string Gump_WriteRadioBox(bool bIsRevision, int x, int y, int uncheckedid, int checkedid, bool ischecked, int id)
     {
       StringWriter stringWriter = new StringWriter();
-     // if (bIsRevision)
+      if (bIsRevision)
         stringWriter.Write("radio {0} {1} {2} {3} {4} {5}", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
-    //  else
-    //    stringWriter.Write("Radio({0},{1},{2},{3},{4},{5})", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
+      else
+        stringWriter.Write("Radio({0},{1},{2},{3},{4},{5})", (object) x.ToString(), (object) y.ToString(), (object) checkedid.ToString(), (object) uncheckedid.ToString(), ischecked ? (object) "1" : (object) "0", (object) id.ToString());
       return stringWriter.ToString();
     }
 

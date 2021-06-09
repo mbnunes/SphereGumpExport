@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SphereGumpExport", "SphereGumpExport.csproj", "{45B1DB9D-78BE-45D0-A2E1-1093C62AB0DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SphereGumpExport", "SphereGumpExport.csproj", "{77CF41D4-10CC-4B04-A226-8EF966FB336B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,15 +10,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{45B1DB9D-78BE-45D0-A2E1-1093C62AB0DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45B1DB9D-78BE-45D0-A2E1-1093C62AB0DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45B1DB9D-78BE-45D0-A2E1-1093C62AB0DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45B1DB9D-78BE-45D0-A2E1-1093C62AB0DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CF41D4-10CC-4B04-A226-8EF966FB336B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77CF41D4-10CC-4B04-A226-8EF966FB336B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77CF41D4-10CC-4B04-A226-8EF966FB336B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77CF41D4-10CC-4B04-A226-8EF966FB336B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0EAF119B-638C-4E5F-B841-BF135B8D771A}
+		SolutionGuid = {F4E4A1EF-6A88-4F85-ACA2-25A7C595FB1C}
 	EndGlobalSection
 EndGlobal
